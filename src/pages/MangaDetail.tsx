@@ -150,17 +150,17 @@ export function MangaDetail() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                 {chapters.map((chapter) => (
                   <button
-                    key={chapter.id}
-                    onClick={() => loadChapter(chapter)}
-                    className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                      selectedChapter?.id === chapter.id
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    )}
-                  >
-                    Chapter {chapter.attributes.chapter}
-                  </button>
+  key={chapter.id}
+  onClick={() => navigate(`/manga/${id}/chapter/${chapter.id}`)} // Navega para a tela de leitura
+  className={cn(
+    'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+    selectedChapter?.id === chapter.id
+      ? 'bg-indigo-600 text-white'
+      : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
+  )}
+>
+  Chapter {chapter.attributes.chapter}
+</button>
                 ))}
               </div>
             </div>
@@ -168,27 +168,6 @@ export function MangaDetail() {
         </div>
       ) : (
         <div className="relative">
-          {/* Chapter Navigation */}
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2">
-            <button
-              onClick={handlePreviousChapter}
-              disabled={chapters.findIndex(c => c.id === selectedChapter.id) === chapters.length - 1}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <span className="text-sm font-medium dark:text-white">
-              Chapter {selectedChapter.attributes.chapter}
-            </span>
-            <button
-              onClick={handleNextChapter}
-              disabled={chapters.findIndex(c => c.id === selectedChapter.id) === 0}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-
           {/* Scroll Hint */}
           {showScrollHint && (
             <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-black/75 text-white px-4 py-2 rounded-full flex items-center space-x-2">
@@ -198,29 +177,49 @@ export function MangaDetail() {
           )}
 
           {/* Reader */}
-          <div
-            ref={readerRef}
-            className="max-w-4xl mx-auto bg-gray-900 rounded-lg overflow-y-auto"
-            style={{ maxHeight: 'calc(100vh - 120px)' }}
-          >
-            {loadingChapter ? (
-              <div className="flex items-center justify-center h-96">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600" />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {pages.map((page, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={page}
-                      alt={`Page ${index + 1}`}
-                      className="w-full h-auto"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="flex items-center justify-center">
+            {/* Chapter Navigation - Left */}
+            <button
+              onClick={handlePreviousChapter}
+              disabled={chapters.findIndex(c => c.id === selectedChapter.id) === chapters.length - 1}
+              className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 bg-white dark:bg-gray-800 shadow-lg"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            {/* Chapter Navigation - Right */}
+            <button
+              onClick={handleNextChapter}
+              disabled={chapters.findIndex(c => c.id === selectedChapter.id) === 0}
+              className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 bg-white dark:bg-gray-800 shadow-lg"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            <div
+              ref={readerRef}
+              className="max-w-4xl mx-auto bg-gray-900 rounded-lg overflow-y-auto"
+              style={{ maxHeight: 'calc(100vh - 120px)' }}
+            >
+              {loadingChapter ? (
+                <div className="flex items-center justify-center h-96">
+                  <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600" />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {pages.map((page, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={page}
+                        alt={`Page ${index + 1}`}
+                        className="w-full h-auto"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
